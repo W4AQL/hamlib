@@ -138,6 +138,10 @@ gs232_rot_set_position(ROT *rot, azimuth_t az, elevation_t el)
 
     rig_debug(RIG_DEBUG_TRACE, "%s called: %f %f\n", __FUNCTION__, az, el);
 
+    az -= 180.0f;
+    if (az < 0)
+        az += 360.0f;
+
     u_az = (unsigned)rint(az);
     u_el = (unsigned)rint(el);
 
@@ -171,6 +175,10 @@ gs232_rot_get_position(ROT *rot, azimuth_t *az, elevation_t *el)
         rig_debug(RIG_DEBUG_ERR, "%s: wrong reply '%s'\n", __FUNCTION__, posbuf);
         return -RIG_EPROTO;
     }
+
+    *az += 180.0f;
+    if (*az >= 360.0f)
+    	*az -= 360.0f;
 
     rig_debug(RIG_DEBUG_TRACE, "%s: (az, el) = (%.1f, %.1f)\n",
 		   __FUNCTION__, *az, *el);
